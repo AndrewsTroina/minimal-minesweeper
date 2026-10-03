@@ -1,0 +1,113 @@
+/* BOTÃO NOVO JOGO */
+.restart{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:18px;
+  margin:96px auto 24px;
+  user-select:none;
+}
+.restart__disc{
+  width:44px;height:44px;
+  border-radius:50%;
+  background:var(--green);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:transform .25s ease;
+}
+.restart:hover .restart__disc{transform:scale(1.06);}
+.restart__disc svg{width:12px;height:12px;}
+.restart__txt{
+  font-size:10px;
+  letter-spacing:0.42em;
+  text-transform:uppercase;
+  font-weight:300;
+}
+
+/* MODAL */
+.modal{
+  position:fixed;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:100;
+}
+.modal[hidden]{display:none;}
+.modal__backdrop{
+  position:absolute;
+  inset:0;
+  background:rgba(255,255,255,.85);
+  backdrop-filter:blur(2px);
+}
+.modal__panel{
+  position:relative;
+  background:var(--white);
+  padding:48px 56px;
+  width:min(420px,90vw);
+  display:flex;
+  flex-direction:column;
+  gap:32px;
+}
+.modal__title{
+  font-size:11px;
+  letter-spacing:0.38em;
+  text-transform:uppercase;
+  font-weight:400;
+  color:var(--green);
+  text-align:center;
+}
+.modal__form{display:flex;flex-direction:column;gap:24px;}
+
+.field{display:flex;flex-direction:column;gap:8px;}
+.field__label{
+  font-size:10px;
+  letter-spacing:0.34em;
+  text-transform:uppercase;
+  opacity:.65;
+}
+.field__input{
+  background:transparent;
+  border:none;
+  border-bottom:1px solid var(--unrevealed);
+  padding:8px 0;
+  font-size:24px;
+  font-weight:200;
+  color:var(--black);
+  outline:none;
+  font-variant-numeric:tabular-nums;
+  transition:border-color .2s ease;
+  width:100%;
+}
+.field__input:focus{border-bottom-color:var(--green);}
+.field__input::-webkit-outer-spin-button,
+.field__input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+.field__input[type=number]{-moz-appearance:textfield;}
+
+.modal__hint{
+  font-size:9px;
+  letter-spacing:0.24em;
+  text-transform:uppercase;
+  opacity:.5;
+  text-align:center;
+}
+.modal__hint.is-error{color:#B00020;opacity:.9;}
+
+.modal__actions{
+  display:flex;
+  justify-content:space-between;
+  gap:16px;
+  margin-top:8px;
+}
+.btn{
+  font-size:10px;
+  letter-spacing:0.38em;
+  text-transform:uppercase;
+  padding:12px 4px;
+  transition:opacity .2s ease, color .2s ease;
+}
+.btn--ghost{opacity:.55;}
+.btn--ghost:hover{opacity:.9;}
+.btn--solid{color:var(--green);}
+.btn--solid:hover{opacity:.7;}
