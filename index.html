@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MOSS & MINE</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="css/reset.css">
+<link rel="stylesheet" href="css/variables.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/board.css">
+<link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="brand">
+      <span class="brand__leaf" aria-hidden="true"><i></i><i></i></span>
+      <span class="brand__name">Moss &amp; Mine</span>
+    </div>
+    <nav class="site-nav">
+      <a href="#">Jogos</a>
+      <a href="#">Sobre</a>
+    </nav>
+  </header>
+
+  <!-- DIFFICULTY SELECTOR -->
+  <section class="difficulty" id="difficulty" aria-label="Nível de dificuldade">
+    <button class="difficulty__btn is-active" data-preset="easy" type="button">
+      <span class="difficulty__label">Fácil</span>
+      <span class="difficulty__meta">9 × 9 · 10 minas</span>
+    </button>
+    <button class="difficulty__btn" data-preset="medium" type="button">
+      <span class="difficulty__label">Médio</span>
+      <span class="difficulty__meta">16 × 12 · 30 minas</span>
+    </button>
+    <button class="difficulty__btn" data-preset="hard" type="button">
+      <span class="difficulty__label">Difícil</span>
+      <span class="difficulty__meta">20 × 15 · 60 minas</span>
+    </button>
+    <button class="difficulty__btn" data-preset="custom" type="button">
+      <span class="difficulty__label">Personalizar</span>
+      <span class="difficulty__meta">Defina o tamanho</span>
+    </button>
+  </section>
+
+  <!-- INFO -->
+  <section class="info">
+    <div class="info__block">
+      <span class="label">Minas</span>
+      <span class="value" id="mineCount">10</span>
+    </div>
+    <div class="info__block info__block--right">
+      <span class="label">Tempo</span>
+      <span class="value" id="timer">00:00</span>
+    </div>
+  </section>
+
+  <!-- BOARD -->
+  <div class="board-wrap">
+    <div class="board" id="board">
+      <div class="goo-layer" aria-hidden="true">
+        <svg id="gooSvg" viewBox="0 0 0 0" preserveAspectRatio="none">
+          <g id="gooGroup"></g>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTÃO NOVO JOGO -->
+  <button class="restart" id="restart" type="button">
+    <span class="restart__disc">
+      <svg viewBox="0 0 12 12" fill="none" aria-hidden="true">
+        <path d="M3 1.5 L10 6 L3 10.5 Z" fill="#FFFFFF"/>
+      </svg>
+    </span>
+    <span class="restart__txt">Novo Jogo</span>
+  </button>
+
+  <div class="status" id="status" role="status" aria-live="polite"></div>
+
+  <!-- CUSTOM MODAL -->
+  <div class="modal" id="customModal" hidden>
+    <div class="modal__backdrop" data-close-modal></div>
+    <div class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="customTitle">
+      <h2 class="modal__title" id="customTitle">Personalizar</h2>
+
+      <form class="modal__form" id="customForm">
+        <div class="field">
+          <label class="field__label" for="colInput">Colunas</label>
+          <input class="field__input" id="colInput" type="number"
+                 min="5" max="40" step="1" value="11" inputmode="numeric">
+        </div>
+        <div class="field">
+          <label class="field__label" for="rowInput">Linhas</label>
+          <input class="field__input" id="rowInput" type="number"
+                 min="5" max="30" step="1" value="10" inputmode="numeric">
+        </div>
+        <div class="field">
+          <label class="field__label" for="mineInput">Minas</label>
+          <input class="field__input" id="mineInput" type="number"
+                 min="1" max="500" step="1" value="10" inputmode="numeric">
+        </div>
+        <p class="modal__hint" id="customHint">Máximo sugerido: 25% das células.</p>
+
+        <div class="modal__actions">
+          <button type="button" class="btn btn--ghost" data-close-modal>Cancelar</button>
+          <button type="submit" class="btn btn--solid">Começar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- FILTRO GOO -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <filter id="goo">
+        <feGaussianBlur in="SourceGraphic" stdDeviation="7" result="blur"/>
+        <feColorMatrix in="blur" mode="matrix"
+          values="1 0 0 0 0
+                  0 1 0 0 0
+                  0 0 1 0 0
+                  0 0 0 22 -10"/>
+      </filter>
+    </defs>
+  </svg>
+
+  <!-- SCRIPTS -->
+  <script src="js/config.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/board.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
