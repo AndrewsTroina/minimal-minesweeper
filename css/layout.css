@@ -1,0 +1,119 @@
+body{
+  background:var(--white);
+  color:var(--black);
+  font-family:var(--font-sans);
+  font-weight:300;
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+  padding:var(--page-pad);
+}
+
+/* HEADER */
+.site-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  font-size:11px;
+  letter-spacing:0.32em;
+  text-transform:uppercase;
+}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  color:var(--green);
+  font-weight:400;
+  letter-spacing:0.28em;
+}
+.brand__leaf{display:inline-flex;gap:3px;align-items:center;}
+.brand__leaf i{
+  display:block;
+  width:6px;height:10px;
+  background:var(--green);
+  border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;
+}
+.brand__leaf i:nth-child(2){
+  width:5px;height:8px;
+  opacity:.75;
+  transform:translateY(-1px);
+}
+.site-nav{display:flex;gap:36px;}
+.site-nav a{font-weight:300;}
+
+/* DIFficulty */
+.difficulty{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap:36px;
+  margin:56px auto 24px;
+}
+.difficulty__btn{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:6px;
+  padding:10px 4px;
+  color:var(--black);
+  transition:opacity .25s ease;
+}
+.difficulty__btn:hover{opacity:.6;}
+.difficulty__label{
+  font-size:11px;
+  letter-spacing:0.36em;
+  text-transform:uppercase;
+  font-weight:400;
+}
+.difficulty__meta{
+  font-size:9px;
+  letter-spacing:0.28em;
+  text-transform:uppercase;
+  opacity:.55;
+}
+.difficulty__btn.is-active .difficulty__label{color:var(--green);}
+.difficulty__btn.is-active .difficulty__meta{color:var(--green);opacity:.75;}
+
+/* INFO */
+.info{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  width:min(560px,100%);
+  margin:56px auto 32px;
+}
+.info__block{display:flex;flex-direction:column;gap:10px;}
+.info__block--right{align-items:flex-end;}
+.label{
+  font-size:10px;
+  letter-spacing:0.38em;
+  text-transform:uppercase;
+  opacity:.65;
+}
+.value{
+  font-size:36px;
+  font-weight:200;
+  letter-spacing:0.06em;
+  line-height:1;
+  font-variant-numeric:tabular-nums;
+}
+
+/* BOARD WRAP */
+.board-wrap{
+  display:flex;
+  justify-content:center;
+  margin:24px 0;
+  overflow:auto;
+  padding:8px 0;
+}
+
+/* STATUS */
+.status{
+  text-align:center;
+  font-size:10px;
+  letter-spacing:0.42em;
+  text-transform:uppercase;
+  color:var(--green);
+  min-height:14px;
+  margin-top:8px;
+  opacity:.85;
+}
