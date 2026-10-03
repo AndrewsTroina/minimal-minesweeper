@@ -1,0 +1,19 @@
+:root{
+  /* CORES */
+  --white:#FFFFFF;
+  --unrevealed:#F0F1EE;
+  --black:#111111;
+  --green:#1F3A2E;
+
+  /* TABULEIRO */
+  --gap:14px;
+  --dot:16px;
+  --cell:calc(var(--dot) + var(--gap));
+
+  /* TIPOGRAFIA */
+  --font-sans:'Inter',system-ui,-apple-system,sans-serif;
+
+  /* ESPAÇAMENTO */
+  --page-pad:48px 64px;
+  --section-gap:80px;
+}
