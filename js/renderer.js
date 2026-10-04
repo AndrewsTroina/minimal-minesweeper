@@ -27,33 +27,35 @@ MOSS.Renderer = (function () {
   }
 
   function buildCells(cols, rows, onLeft, onRight) {
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        const cell = document.createElement('div');
-        cell.className = 'cell';
-        cell.dataset.r = r;
-        cell.dataset.c = c;
+  const isTouch = matchMedia('(hover: none) and (pointer: coarse)').matches;
 
-        const dot = document.createElement('div');
-        dot.className = 'dot';
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      cell.dataset.r = r;
+      cell.dataset.c = c;
 
-        const num = document.createElement('div');
-        num.className = 'num';
+      const dot  = document.createElement('div'); dot.className  = 'dot';
+      const num  = document.createElement('div'); num.className  = 'num';
+      const mine = document.createElement('div'); mine.className = 'mine';
+      const flag = document.createElement('div'); flag.className = 'flag';
+      flag.innerHTML =
+        '<svg viewBox="0 0 12 14" aria-hidden="true">' +
+          '<rect x="1" y="1" width="1" height="12" fill="#1F3A2E"/>' +
+          '<path d="M2 1 L10 4 L2 7 Z" fill="#1F3A2E"/>' +
+        '</svg>';
 
-        const mine = document.createElement('div');
-        mine.className = 'mine';
+      cell.append(dot, num, mine, flag);
+      boardEl.appendChild(cell);
 
-        const flag = document.createElement('div');
-        flag.className = 'flag';
-        flag.innerHTML = `
-          <svg viewBox="0 0 12 14" aria-hidden="true">
-            <rect x="1" y="1" width="1" height="12" fill="#1F3A2E"/>
-            <path d="M2 1 L10 4 L2 7 Z" fill="#1F3A2E"/>
-          </svg>`;
-
-        cell.append(dot, num, mine, flag);
-        boardEl.appendChild(cell);
-
+      if (isTouch && MOSS.Touch) {
+        MOSS.Touch.attach(
+          cell,
+          () => onLeft(r, c),
+          () => onRight(r, c)
+        );
+      } else {
         cell.addEventListener('click', () => onLeft(r, c));
         cell.addEventListener('contextmenu', e => {
           e.preventDefault();
@@ -62,6 +64,7 @@ MOSS.Renderer = (function () {
       }
     }
   }
+}
 
   function refreshCell(state, r, c) {
     const i = r * state.cols + c;
