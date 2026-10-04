@@ -1,19 +1,28 @@
 :root{
-  /* CORES */
   --white:#FFFFFF;
   --unrevealed:#F0F1EE;
   --black:#111111;
   --green:#1F3A2E;
 
-  /* TABULEIRO */
-  --gap:14px;
+  /* Valores padrão — serão recalculados por JS em runtime */
+  --cell:30px;
   --dot:16px;
-  --cell:calc(var(--dot) + var(--gap));
+  --gap:14px;
 
-  /* TIPOGRAFIA */
   --font-sans:'Inter',system-ui,-apple-system,sans-serif;
-
-  /* ESPAÇAMENTO */
   --page-pad:48px 64px;
-  --section-gap:80px;
+}
+
+/* Mobile: menos respiro em volta */
+@media (max-width: 720px){
+  :root{
+    --page-pad:20px 18px;
+  }
+}
+
+/* Telas muito baixas (landscape de celular) */
+@media (max-height: 520px){
+  :root{
+    --page-pad:12px 16px;
+  }
 }
