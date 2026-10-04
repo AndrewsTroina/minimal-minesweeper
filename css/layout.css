@@ -6,6 +6,7 @@ body{
   display:flex;
   flex-direction:column;
   min-height:100vh;
+  min-height:100dvh;   /* melhor no mobile */
   padding:var(--page-pad);
 }
 
@@ -17,6 +18,7 @@ body{
   font-size:11px;
   letter-spacing:0.32em;
   text-transform:uppercase;
+  flex-shrink:0;
 }
 .brand{
   display:flex;
@@ -41,13 +43,14 @@ body{
 .site-nav{display:flex;gap:36px;}
 .site-nav a{font-weight:300;}
 
-/* DIFficulty */
+/* DIFICULDADE */
 .difficulty{
   display:flex;
   flex-wrap:wrap;
   justify-content:center;
   gap:36px;
   margin:56px auto 24px;
+  flex-shrink:0;
 }
 .difficulty__btn{
   display:flex;
@@ -57,6 +60,7 @@ body{
   padding:10px 4px;
   color:var(--black);
   transition:opacity .25s ease;
+  -webkit-tap-highlight-color:transparent;
 }
 .difficulty__btn:hover{opacity:.6;}
 .difficulty__label{
@@ -80,6 +84,7 @@ body{
   grid-template-columns:1fr 1fr;
   width:min(560px,100%);
   margin:56px auto 32px;
+  flex-shrink:0;
 }
 .info__block{display:flex;flex-direction:column;gap:10px;}
 .info__block--right{align-items:flex-end;}
@@ -97,13 +102,17 @@ body{
   font-variant-numeric:tabular-nums;
 }
 
-/* BOARD WRAP */
+/* BOARD WRAP — precisa crescer e ceder espaço no mobile */
 .board-wrap{
   display:flex;
   justify-content:center;
-  margin:24px 0;
-  overflow:auto;
-  padding:8px 0;
+  align-items:center;
+  flex:1 1 auto;         /* ocupa o espaço vertical restante */
+  min-height:0;          /* permite encolher dentro do flex */
+  margin:16px 0;
+  padding:4px 0;
+  overflow:auto;         /* fallback se algo ainda estourar */
+  -webkit-overflow-scrolling:touch;
 }
 
 /* STATUS */
@@ -116,4 +125,41 @@ body{
   min-height:14px;
   margin-top:8px;
   opacity:.85;
+  flex-shrink:0;
+}
+
+/* ============ MOBILE ============ */
+@media (max-width: 720px){
+  .site-header{font-size:10px;letter-spacing:0.24em;}
+  .site-nav{gap:20px;}
+
+  .difficulty{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px 20px;
+    margin:28px auto 12px;
+    width:100%;
+    max-width:420px;
+  }
+  .difficulty__btn{padding:6px 2px;}
+  .difficulty__label{font-size:10px;letter-spacing:0.28em;}
+  .difficulty__meta{font-size:8px;letter-spacing:0.22em;}
+
+  .info{
+    margin:16px auto 8px;
+    width:100%;
+    max-width:420px;
+  }
+  .label{font-size:9px;letter-spacing:0.3em;}
+  .value{font-size:26px;}
+
+  .board-wrap{margin:8px 0;}
+}
+
+@media (max-height: 620px){
+  .difficulty{margin:12px auto 6px;}
+  .info{margin:6px auto 4px;}
+  .value{font-size:22px;}
+  .restart{margin:12px auto 4px;gap:8px;}
+  .restart__disc{width:34px;height:34px;}
 }
