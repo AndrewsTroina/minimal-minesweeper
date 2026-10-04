@@ -42,8 +42,8 @@ MOSS.Renderer = (function () {
         const flag = document.createElement('div'); flag.className = 'flag';
         flag.innerHTML =
           '<svg viewBox="0 0 12 14" aria-hidden="true">' +
-            '<rect x="1" y="1" width="1" height="12" fill="#1F3A2E"/>' +
-            '<path d="M2 1 L10 4 L2 7 Z" fill="#1F3A2E"/>' +
+            '<rect x="1" y="1" width="1" height="12"/>' +
+            '<path d="M2 1 L10 4 L2 7 Z"/>' +
           '</svg>';
 
         cell.append(dot, num, mine, flag);
@@ -100,15 +100,13 @@ MOSS.Renderer = (function () {
     gooGroup.innerHTML = '';
 
     // Raio de fusão = raio visual do dot cinza.
-    // Assim os círculos vazios conectados se tocam exatamente como os cinza
-    // apareceriam se estivessem lado a lado — fusão sem "inchar".
     const fusionRadius = radius;
 
     for (let r = 0; r < state.rows; r++) {
       for (let c = 0; c < state.cols; c++) {
         const i = r * state.cols + c;
         if (!state.revealed[i]) continue;
-        if (state.counts[i] !== 0) continue;   // apenas células VAZIAS entram na massa
+        if (state.counts[i] === -1) continue;   // só minas ficam de fora
 
         const cx = c * cell + cell / 2;
         const cy = r * cell + cell / 2;
