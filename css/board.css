@@ -24,6 +24,7 @@
 }
 .cell.revealed .dot{opacity:0;}
 
+/* Números ficam BRANCOS sobre a massa preta */
 .cell .num{
   position:absolute;
   inset:0;
@@ -32,14 +33,16 @@
   justify-content:center;
   font-size:12px;
   font-weight:400;
-  color:var(--black);
+  color:var(--white);
   opacity:0;
   transition:opacity .25s ease .1s;
   z-index:5;
   font-variant-numeric:tabular-nums;
+  pointer-events:none;
 }
 .cell.revealed.has-num .num{opacity:1;}
 
+/* Bandeira: verde fora da massa, branca sobre a massa */
 .cell .flag{
   position:absolute;
   inset:0;
@@ -47,10 +50,14 @@
   align-items:center;
   justify-content:center;
   z-index:6;
+  pointer-events:none;
 }
 .cell.flagged .flag{display:flex;}
 .cell .flag svg{width:60%;height:60%;max-width:14px;max-height:16px;}
+.cell .flag svg rect,
+.cell .flag svg path{fill:var(--green);}
 
+/* Mina: círculo pequeno branco quando sobre a massa */
 .cell .mine{
   position:absolute;
   inset:0;
@@ -58,6 +65,7 @@
   align-items:center;
   justify-content:center;
   z-index:5;
+  pointer-events:none;
 }
 .cell.revealed.mine-cell .mine{display:flex;}
 .cell .mine::after{
@@ -65,14 +73,14 @@
   width:34%;
   height:34%;
   border-radius:50%;
-  background:var(--black);
+  background:var(--white);
 }
 
 .goo-layer{
   position:absolute;
   inset:0;
   pointer-events:none;
-  z-index:0;             /* fica ATRÁS das células */
+  z-index:0;
   filter:url(#goo);
 }
 .goo-layer svg{width:100%;height:100%;display:block;}
