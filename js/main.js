@@ -2,16 +2,32 @@ window.MOSS = window.MOSS || {};
 (function () {
   const { CONFIG } = MOSS;
   const { Renderer, Game, UI } = MOSS;
-  const Fit  = MOSS.Fit;
+  const Fit   = MOSS.Fit;
   const Touch = MOSS.Touch;
 
   function safe(fn, label) {
     return function () {
       try { return fn.apply(null, arguments); }
-      catch (err) {
-        console.error('[MOSS] erro em ' + label + ':', err);
-      }
+      catch (err) { console.error('[MOSS] erro em ' + label + ':', err); }
     };
+  }
+
+  // Bind universal: click para mouse, pointerup para touch.
+  // Deduplica para não disparar duas vezes no mesmo gesto.
+  function bindTap(el, handler, label) {
+    let lastFire = 0;
+    const wrapped = safe(function (e) {
+      const now = Date.now();
+      if (now - lastFire < 350) return;   // dedup
+      lastFire = now;
+      handler(e);
+    }, label);
+
+    el.addEventListener('click', wrapped);
+    el.addEventListener('pointerup', function (e) {
+      // Só dispara pointerup em dispositivos touch
+      if (e.pointerType === 'touch') wrapped(e);
+    });
   }
 
   function boot() {
@@ -19,6 +35,7 @@ window.MOSS = window.MOSS || {};
       console.log('[MOSS] boot');
       UI.cache();
       Renderer.init();
+      UI.ensureModalClosed();   // Garante modal fechado no boot
 
       UI.setActivePreset(CONFIG.defaults.preset);
       const initial = CONFIG.presets[CONFIG.defaults.preset];
@@ -36,6 +53,7 @@ window.MOSS = window.MOSS || {};
   }
 
   function startNewGame(config) {
+    console.log('[MOSS] new game', config);
     Game.newGame(config);
     const state = Game.getState();
     Renderer.rebuild(state, {
@@ -64,28 +82,32 @@ window.MOSS = window.MOSS || {};
   }
 
   function wireUIEvents() {
+    // Botões de preset
     UI.els.difficulty.querySelectorAll('.difficulty__btn').forEach(btn => {
-      btn.addEventListener('click', safe(() => {
+      bindTap(btn, function () {
         const key = btn.dataset.preset;
-        console.log('[MOSS] click preset:', key);
+        console.log('[MOSS] preset:', key);
         if (key === 'custom') { UI.openCustomModal(); return; }
         const preset = CONFIG.presets[key];
-        if (!preset) { console.warn('[MOSS] preset inexistente:', key); return; }
+        if (!preset) return;
         UI.setActivePreset(key);
         startNewGame({ cols: preset.cols, rows: preset.rows, mines: preset.mines });
-      }, 'preset click'));
+      }, 'preset ' + btn.dataset.preset);
     });
 
-    UI.els.restart.addEventListener('click', safe(() => {
-      console.log('[MOSS] click novo jogo');
+    // Botão novo jogo
+    bindTap(UI.els.restart, function () {
+      console.log('[MOSS] novo jogo');
       const key = UI.getActivePreset();
       if (key === 'custom') { UI.openCustomModal(); return; }
       const preset = CONFIG.presets[key];
+      if (!preset) return;
       startNewGame({ cols: preset.cols, rows: preset.rows, mines: preset.mines });
-    }, 'restart click'));
+    }, 'restart');
 
+    // Fechar modal
     UI.els.modal.querySelectorAll('[data-close-modal]').forEach(el => {
-      el.addEventListener('click', safe(() => UI.closeCustomModal(), 'close modal'));
+      bindTap(el, function () { UI.closeCustomModal(); }, 'close modal');
     });
 
     document.addEventListener('keydown', e => {
