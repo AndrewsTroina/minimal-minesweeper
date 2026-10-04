@@ -1,26 +1,22 @@
 window.MOSS = window.MOSS || {};
-
 (function () {
   const { CONFIG } = MOSS;
-  const { Renderer, Game, UI, utils } = MOSS;
+  const { Renderer, Game, UI, Fit } = MOSS;
 
   function boot() {
     UI.cache();
     Renderer.init();
 
-    // Preset inicial
     UI.setActivePreset(CONFIG.defaults.preset);
     const initial = CONFIG.presets[CONFIG.defaults.preset];
-
-    startNewGame({
-      cols: initial.cols,
-      rows: initial.rows,
-      mines: initial.mines
-    });
+    startNewGame({ cols: initial.cols, rows: initial.rows, mines: initial.mines });
 
     wireGameEvents();
     wireUIEvents();
     wireResize();
+
+    // Ajusta o tamanho das células após o primeiro render
+    Fit.init();
   }
 
   function startNewGame(config) {
@@ -32,6 +28,8 @@ window.MOSS = window.MOSS || {};
     });
     Renderer.renderAll(state);
     UI.setStatus('');
+    // Recalcula tamanho das células para o novo grid
+    if (Fit) Fit.schedule();
   }
 
   function wireGameEvents() {
@@ -39,87 +37,53 @@ window.MOSS = window.MOSS || {};
       UI.setMineCount(state.mineCount);
       UI.setTimer(0);
     });
-
-    Game.on('tick', ({ seconds }) => UI.setTimer(seconds));
-
-    Game.on('mines', ({ remaining }) => UI.setMineCount(remaining));
-
-    Game.on('reveal', ({ state }) => {
-      // Atualiza todas as células afetadas + massa preta
-      Renderer.renderAll(state);
-    });
-
-    Game.on('flag', ({ state, r, c }) => {
-      Renderer.refreshCell(state, r, c);
-    });
-
-    Game.on('end', ({ state, win }) => {
+    Game.on('tick',    ({ seconds })   => UI.setTimer(seconds));
+    Game.on('mines',   ({ remaining }) => UI.setMineCount(remaining));
+    Game.on('reveal',  ({ state })     => Renderer.renderAll(state));
+    Game.on('flag',    ({ state, r, c })=> Renderer.refreshCell(state, r, c));
+    Game.on('end',     ({ state, win }) => {
       Renderer.renderAll(state);
       UI.setStatus(win ? 'Você venceu' : 'Fim de jogo');
     });
   }
 
   function wireUIEvents() {
-    // Preset buttons
     UI.els.difficulty.querySelectorAll('.difficulty__btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const key = btn.dataset.preset;
-        if (key === 'custom') {
-          UI.openCustomModal();
-          return;
-        }
+        if (key === 'custom') { UI.openCustomModal(); return; }
         const preset = CONFIG.presets[key];
         UI.setActivePreset(key);
-        startNewGame({
-          cols: preset.cols,
-          rows: preset.rows,
-          mines: preset.mines
-        });
+        startNewGame({ cols: preset.cols, rows: preset.rows, mines: preset.mines });
       });
     });
 
-    // Restart
     UI.els.restart.addEventListener('click', () => {
       const key = UI.getActivePreset();
-      if (key === 'custom') {
-        UI.openCustomModal();
-        return;
-      }
+      if (key === 'custom') { UI.openCustomModal(); return; }
       const preset = CONFIG.presets[key];
-      startNewGame({
-        cols: preset.cols,
-        rows: preset.rows,
-        mines: preset.mines
-      });
+      startNewGame({ cols: preset.cols, rows: preset.rows, mines: preset.mines });
     });
 
-    // Modal close
     UI.els.modal.querySelectorAll('[data-close-modal]').forEach(el => {
       el.addEventListener('click', () => UI.closeCustomModal());
     });
-
     document.addEventListener('keydown', e => {
-      if (e.key === 'Escape' && !UI.els.modal.hidden) {
-        UI.closeCustomModal();
-      }
+      if (e.key === 'Escape' && !UI.els.modal.hidden) UI.closeCustomModal();
     });
 
-    // Modal inputs -> hint dinâmico
-    ['colInput', 'rowInput', 'mineInput'].forEach(id => {
+    ['colInput','rowInput','mineInput'].forEach(id => {
       UI.els[id].addEventListener('input', UI.updateCustomHint);
     });
 
-    // Submit custom
     UI.els.form.addEventListener('submit', e => {
       e.preventDefault();
       const { cols, rows, mines } = UI.readCustomValues();
       const total = cols * rows;
-      const maxMines = Math.min(
-        CONFIG.custom.maxMines,
-        Math.max(1, Math.floor(total * CONFIG.custom.safeRatio))
-      );
+      const maxMines = Math.min(CONFIG.custom.maxMines,
+        Math.max(1, Math.floor(total * CONFIG.custom.safeRatio)));
       if (mines > maxMines) {
-        UI.flashHintError(`Máximo ${maxMines} minas para este tamanho.`);
+        UI.flashHintError('Máximo ' + maxMines + ' minas para este tamanho.');
         return;
       }
       UI.closeCustomModal();
@@ -133,8 +97,11 @@ window.MOSS = window.MOSS || {};
     window.addEventListener('resize', () => {
       if (raf) cancelAnimationFrame(raf);
       raf = requestAnimationFrame(() => {
-        const state = Game.getState();
-        if (state) Renderer.updateGoo(state);
+        const s = Game.getState();
+        if (s) {
+          Renderer.updateGoo(s);
+          if (Fit) Fit.schedule();
+        }
       });
     });
   }
