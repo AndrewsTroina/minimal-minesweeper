@@ -6,11 +6,10 @@ body{
   display:flex;
   flex-direction:column;
   min-height:100vh;
-  min-height:100dvh;   /* melhor no mobile */
+  min-height:100dvh;
   padding:var(--page-pad);
 }
 
-/* HEADER */
 .site-header{
   display:flex;
   justify-content:space-between;
@@ -19,31 +18,30 @@ body{
   letter-spacing:0.32em;
   text-transform:uppercase;
   flex-shrink:0;
+  position:relative;
+  z-index:10;
 }
 .brand{
-  display:flex;
-  align-items:center;
-  gap:14px;
-  color:var(--green);
-  font-weight:400;
-  letter-spacing:0.28em;
+  display:flex;align-items:center;gap:14px;
+  color:var(--green);font-weight:400;letter-spacing:0.28em;
 }
 .brand__leaf{display:inline-flex;gap:3px;align-items:center;}
 .brand__leaf i{
-  display:block;
-  width:6px;height:10px;
-  background:var(--green);
+  display:block;width:6px;height:10px;background:var(--green);
   border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;
 }
 .brand__leaf i:nth-child(2){
-  width:5px;height:8px;
-  opacity:.75;
-  transform:translateY(-1px);
+  width:5px;height:8px;opacity:.75;transform:translateY(-1px);
 }
 .site-nav{display:flex;gap:36px;}
-.site-nav a{font-weight:300;}
+.site-nav a{
+  font-weight:300;
+  padding:6px 2px;
+  display:inline-block;
+  cursor:pointer;
+}
 
-/* DIFICULDADE */
+/* DIFICULDADE — botões realmente clicáveis em mobile */
 .difficulty{
   display:flex;
   flex-wrap:wrap;
@@ -51,84 +49,79 @@ body{
   gap:36px;
   margin:56px auto 24px;
   flex-shrink:0;
+  position:relative;
+  z-index:10;
 }
 .difficulty__btn{
   display:flex;
   flex-direction:column;
   align-items:center;
   gap:6px;
-  padding:10px 4px;
+  padding:12px 8px;
   color:var(--black);
   transition:opacity .25s ease;
   -webkit-tap-highlight-color:transparent;
+  cursor:pointer;
+  touch-action:manipulation;
+  position:relative;
+  z-index:10;
+  min-width:120px;
+  min-height:44px;
 }
 .difficulty__btn:hover{opacity:.6;}
+.difficulty__btn:active{opacity:.5;}
 .difficulty__label{
-  font-size:11px;
-  letter-spacing:0.36em;
-  text-transform:uppercase;
-  font-weight:400;
+  font-size:11px;letter-spacing:0.36em;
+  text-transform:uppercase;font-weight:400;
+  pointer-events:none;
 }
 .difficulty__meta{
-  font-size:9px;
-  letter-spacing:0.28em;
-  text-transform:uppercase;
-  opacity:.55;
+  font-size:9px;letter-spacing:0.28em;
+  text-transform:uppercase;opacity:.55;
+  pointer-events:none;
 }
 .difficulty__btn.is-active .difficulty__label{color:var(--green);}
 .difficulty__btn.is-active .difficulty__meta{color:var(--green);opacity:.75;}
 
-/* INFO */
 .info{
-  display:grid;
-  grid-template-columns:1fr 1fr;
+  display:grid;grid-template-columns:1fr 1fr;
   width:min(560px,100%);
   margin:56px auto 32px;
   flex-shrink:0;
+  position:relative;
+  z-index:10;
 }
 .info__block{display:flex;flex-direction:column;gap:10px;}
 .info__block--right{align-items:flex-end;}
 .label{
-  font-size:10px;
-  letter-spacing:0.38em;
-  text-transform:uppercase;
-  opacity:.65;
+  font-size:10px;letter-spacing:0.38em;
+  text-transform:uppercase;opacity:.65;
 }
 .value{
-  font-size:36px;
-  font-weight:200;
-  letter-spacing:0.06em;
-  line-height:1;
-  font-variant-numeric:tabular-nums;
+  font-size:36px;font-weight:200;letter-spacing:0.06em;
+  line-height:1;font-variant-numeric:tabular-nums;
 }
 
-/* BOARD WRAP — precisa crescer e ceder espaço no mobile */
 .board-wrap{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  flex:1 1 auto;         /* ocupa o espaço vertical restante */
-  min-height:0;          /* permite encolher dentro do flex */
-  margin:16px 0;
-  padding:4px 0;
-  overflow:auto;         /* fallback se algo ainda estourar */
+  display:flex;justify-content:center;align-items:center;
+  flex:1 1 auto;min-height:0;
+  margin:16px 0;padding:4px 0;
+  overflow:auto;
   -webkit-overflow-scrolling:touch;
+  position:relative;
+  z-index:1;
 }
 
-/* STATUS */
 .status{
-  text-align:center;
-  font-size:10px;
-  letter-spacing:0.42em;
-  text-transform:uppercase;
-  color:var(--green);
-  min-height:14px;
-  margin-top:8px;
-  opacity:.85;
+  text-align:center;font-size:10px;
+  letter-spacing:0.42em;text-transform:uppercase;
+  color:var(--green);min-height:14px;
+  margin-top:8px;opacity:.85;
   flex-shrink:0;
+  position:relative;
+  z-index:10;
 }
 
-/* ============ MOBILE ============ */
 @media (max-width: 720px){
   .site-header{font-size:10px;letter-spacing:0.24em;}
   .site-nav{gap:20px;}
@@ -136,22 +129,25 @@ body{
   .difficulty{
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:14px 20px;
-    margin:28px auto 12px;
+    gap:10px 12px;
+    margin:24px auto 8px;
     width:100%;
-    max-width:420px;
+    max-width:440px;
   }
-  .difficulty__btn{padding:6px 2px;}
+  .difficulty__btn{
+    padding:10px 4px;
+    min-width:0;
+  }
   .difficulty__label{font-size:10px;letter-spacing:0.28em;}
   .difficulty__meta{font-size:8px;letter-spacing:0.22em;}
 
   .info{
-    margin:16px auto 8px;
+    margin:14px auto 8px;
     width:100%;
-    max-width:420px;
+    max-width:440px;
   }
   .label{font-size:9px;letter-spacing:0.3em;}
-  .value{font-size:26px;}
+  .value{font-size:24px;}
 
   .board-wrap{margin:8px 0;}
 }
