@@ -1,9 +1,5 @@
 window.MOSS = window.MOSS || {};
 
-/**
- * Constrói o estado lógico do tabuleiro.
- * Retorna: { cols, rows, mines, counts, revealed, flagged }
- */
 MOSS.createBoard = function (cols, rows, mineCount) {
   const total = cols * rows;
   const mines = new Set();
@@ -19,6 +15,7 @@ MOSS.createBoard = function (cols, rows, mineCount) {
     for (let c = 0; c < cols; c++) {
       const i = r * cols + c;
       if (mines.has(i)) { counts[i] = -1; continue; }
+
       let n = 0;
       for (let dr = -1; dr <= 1; dr++) {
         for (let dc = -1; dc <= 1; dc++) {
@@ -35,8 +32,7 @@ MOSS.createBoard = function (cols, rows, mineCount) {
   return {
     cols, rows,
     mineCount: safeMineCount,
-    mines,
-    counts,
+    mines, counts,
     revealed: new Array(total).fill(false),
     flagged:  new Array(total).fill(false)
   };
