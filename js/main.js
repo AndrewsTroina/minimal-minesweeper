@@ -1,22 +1,38 @@
 window.MOSS = window.MOSS || {};
 (function () {
   const { CONFIG } = MOSS;
-  const { Renderer, Game, UI, Fit } = MOSS;
+  const { Renderer, Game, UI } = MOSS;
+  const Fit  = MOSS.Fit;
+  const Touch = MOSS.Touch;
+
+  function safe(fn, label) {
+    return function () {
+      try { return fn.apply(null, arguments); }
+      catch (err) {
+        console.error('[MOSS] erro em ' + label + ':', err);
+      }
+    };
+  }
 
   function boot() {
-    UI.cache();
-    Renderer.init();
+    try {
+      console.log('[MOSS] boot');
+      UI.cache();
+      Renderer.init();
 
-    UI.setActivePreset(CONFIG.defaults.preset);
-    const initial = CONFIG.presets[CONFIG.defaults.preset];
-    startNewGame({ cols: initial.cols, rows: initial.rows, mines: initial.mines });
+      UI.setActivePreset(CONFIG.defaults.preset);
+      const initial = CONFIG.presets[CONFIG.defaults.preset];
+      startNewGame({ cols: initial.cols, rows: initial.rows, mines: initial.mines });
 
-    wireGameEvents();
-    wireUIEvents();
-    wireResize();
+      wireGameEvents();
+      wireUIEvents();
+      wireResize();
 
-    // Ajusta o tamanho das células após o primeiro render
-    Fit.init();
+      if (Fit) Fit.init();
+      console.log('[MOSS] boot ok');
+    } catch (err) {
+      console.error('[MOSS] erro no boot:', err);
+    }
   }
 
   function startNewGame(config) {
@@ -28,55 +44,59 @@ window.MOSS = window.MOSS || {};
     });
     Renderer.renderAll(state);
     UI.setStatus('');
-    // Recalcula tamanho das células para o novo grid
     if (Fit) Fit.schedule();
   }
 
   function wireGameEvents() {
-    Game.on('newgame', ({ state }) => {
+    Game.on('newgame', safe(({ state }) => {
       UI.setMineCount(state.mineCount);
       UI.setTimer(0);
-    });
-    Game.on('tick',    ({ seconds })   => UI.setTimer(seconds));
-    Game.on('mines',   ({ remaining }) => UI.setMineCount(remaining));
-    Game.on('reveal',  ({ state })     => Renderer.renderAll(state));
-    Game.on('flag',    ({ state, r, c })=> Renderer.refreshCell(state, r, c));
-    Game.on('end',     ({ state, win }) => {
+    }, 'newgame'));
+
+    Game.on('tick', safe(({ seconds }) => UI.setTimer(seconds), 'tick'));
+    Game.on('mines', safe(({ remaining }) => UI.setMineCount(remaining), 'mines'));
+    Game.on('reveal', safe(({ state }) => Renderer.renderAll(state), 'reveal'));
+    Game.on('flag',   safe(({ state, r, c }) => Renderer.refreshCell(state, r, c), 'flag'));
+    Game.on('end',    safe(({ state, win }) => {
       Renderer.renderAll(state);
       UI.setStatus(win ? 'Você venceu' : 'Fim de jogo');
-    });
+    }, 'end'));
   }
 
   function wireUIEvents() {
     UI.els.difficulty.querySelectorAll('.difficulty__btn').forEach(btn => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener('click', safe(() => {
         const key = btn.dataset.preset;
+        console.log('[MOSS] click preset:', key);
         if (key === 'custom') { UI.openCustomModal(); return; }
         const preset = CONFIG.presets[key];
+        if (!preset) { console.warn('[MOSS] preset inexistente:', key); return; }
         UI.setActivePreset(key);
         startNewGame({ cols: preset.cols, rows: preset.rows, mines: preset.mines });
-      });
+      }, 'preset click'));
     });
 
-    UI.els.restart.addEventListener('click', () => {
+    UI.els.restart.addEventListener('click', safe(() => {
+      console.log('[MOSS] click novo jogo');
       const key = UI.getActivePreset();
       if (key === 'custom') { UI.openCustomModal(); return; }
       const preset = CONFIG.presets[key];
       startNewGame({ cols: preset.cols, rows: preset.rows, mines: preset.mines });
-    });
+    }, 'restart click'));
 
     UI.els.modal.querySelectorAll('[data-close-modal]').forEach(el => {
-      el.addEventListener('click', () => UI.closeCustomModal());
+      el.addEventListener('click', safe(() => UI.closeCustomModal(), 'close modal'));
     });
+
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape' && !UI.els.modal.hidden) UI.closeCustomModal();
     });
 
     ['colInput','rowInput','mineInput'].forEach(id => {
-      UI.els[id].addEventListener('input', UI.updateCustomHint);
+      UI.els[id].addEventListener('input', safe(UI.updateCustomHint, 'hint'));
     });
 
-    UI.els.form.addEventListener('submit', e => {
+    UI.els.form.addEventListener('submit', safe(e => {
       e.preventDefault();
       const { cols, rows, mines } = UI.readCustomValues();
       const total = cols * rows;
@@ -89,7 +109,7 @@ window.MOSS = window.MOSS || {};
       UI.closeCustomModal();
       UI.setActivePreset('custom');
       startNewGame({ cols, rows, mines });
-    });
+    }, 'custom submit'));
   }
 
   function wireResize() {
@@ -106,5 +126,9 @@ window.MOSS = window.MOSS || {};
     });
   }
 
-  document.addEventListener('DOMContentLoaded', boot);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
 })();
