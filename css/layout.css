@@ -159,3 +159,8 @@ body{
   .restart{margin:12px auto 4px;gap:8px;}
   .restart__disc{width:34px;height:34px;}
 }
+/* v4 — dificuldade discreta no rodapé; info alinhada à largura do tabuleiro */
+.info{width:var(--board-w,560px);max-width:100%;margin:clamp(24px,6vh,64px) auto 8px}
+.difficulty{gap:28px;margin:20px auto 0}
+.difficulty__meta{display:none}
+.status{margin:4px 0 0}

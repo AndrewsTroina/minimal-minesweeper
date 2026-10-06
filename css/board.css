@@ -1,87 +1,10 @@
-.board{
-  position:relative;
-  display:grid;
-  grid-template-columns:repeat(var(--cols,11),var(--cell));
-  grid-template-rows:repeat(var(--rows,10),var(--cell));
-}
-
-.cell{
-  position:relative;
-  width:var(--cell);
-  height:var(--cell);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:1;
-}
-
-.cell .dot{
-  width:var(--dot);
-  height:var(--dot);
-  border-radius:50%;
-  background:var(--unrevealed);
-  transition:opacity .35s ease;
-}
-.cell.revealed .dot{opacity:0;}
-
-/* Números ficam BRANCOS sobre a massa preta */
-.cell .num{
-  position:absolute;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:12px;
-  font-weight:400;
-  color:var(--white);
-  opacity:0;
-  transition:opacity .25s ease .1s;
-  z-index:5;
-  font-variant-numeric:tabular-nums;
-  pointer-events:none;
-}
-.cell.revealed.has-num .num{opacity:1;}
-
-/* Bandeira: verde fora da massa, branca sobre a massa */
-.cell .flag{
-  position:absolute;
-  inset:0;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:6;
-  pointer-events:none;
-}
-.cell.flagged .flag{display:flex;}
-.cell .flag svg{width:60%;height:60%;max-width:14px;max-height:16px;}
-.cell .flag svg rect,
-.cell .flag svg path{fill:var(--green);}
-
-/* Mina: círculo pequeno branco quando sobre a massa */
-.cell .mine{
-  position:absolute;
-  inset:0;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:5;
-  pointer-events:none;
-}
-.cell.revealed.mine-cell .mine{display:flex;}
-.cell .mine::after{
-  content:'';
-  width:34%;
-  height:34%;
-  border-radius:50%;
-  background:var(--white);
-}
-
-.goo-layer{
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  z-index:0;
-  filter:url(#goo);
-}
-.goo-layer svg{width:100%;height:100%;display:block;}
-.goo-layer circle{fill:var(--black);}
+.board-wrap{display:flex;flex:1 1 0;min-height:240px;overflow:auto;margin:16px 0;position:relative;z-index:1;-webkit-overflow-scrolling:touch}
+#boardSvg{flex:none;margin:auto;display:block;touch-action:manipulation;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;overflow:visible}
+.mass{fill:var(--black);pointer-events:none}
+.dot{fill:var(--unrevealed);transition:fill .2s ease}
+.hit{fill:none;pointer-events:all}
+@media (hover:hover){.cell:hover .dot{fill:#E3E5E0}}
+.num{font-size:42px;font-weight:400;text-anchor:middle;dominant-baseline:central;pointer-events:none;font-variant-numeric:tabular-nums}
+.n1{fill:var(--green)} .n2{fill:var(--black)} .n3{fill:var(--green);font-weight:500} .n4{fill:var(--black);font-weight:500}
+.mine{fill:var(--black);pointer-events:none}
+.flag{pointer-events:none} .flag rect,.flag path{fill:var(--green)}
