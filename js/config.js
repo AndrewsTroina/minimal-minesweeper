@@ -2,7 +2,7 @@ window.MOSS = window.MOSS || {};
 
 MOSS.CONFIG = {
   presets: {
-    easy:   { cols: 9,  rows: 9,  mines: 10, label: 'Fácil'   },
+    easy:   { cols: 11, rows: 10,  mines: 10, label: 'Fácil'   },
     medium: { cols: 16, rows: 12, mines: 30, label: 'Médio'   },
     hard:   { cols: 20, rows: 15, mines: 60, label: 'Difícil' }
   },

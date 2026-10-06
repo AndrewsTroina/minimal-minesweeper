@@ -1,93 +1,72 @@
 window.MOSS = window.MOSS || {};
-MOSS.Game = (function(){
-  let state=null, finished=false, started=false, seconds=0, timerId=null;
-  let listeners={};
-  function on(ev,fn){ (listeners[ev]=listeners[ev]||[]).push(fn); }
-  function emit(ev,p){ (listeners[ev]||[]).forEach(fn=>fn(p)); }
+MOSS.Game = (function () {
+  let s = null, finished = false, started = false, seconds = 0, timerId = null;
+  const L = {};
+  const on = (e, f) => (L[e] = L[e] || []).push(f);
+  const emit = (e, p) => (L[e] || []).forEach(f => f(p));
+  const stop = () => { if (timerId) { clearInterval(timerId); timerId = null; } };
 
-  function newGame(config){
-    stopTimer();
-    finished=false; started=false; seconds=0;
-    state = MOSS.createBoard(config.cols, config.rows, config.mines);
-    emit('newgame',{state,config});
-    emit('tick',{seconds});
-    emit('mines',{remaining:state.mineCount});
+  function newGame(cfg) {
+    stop(); finished = false; started = false; seconds = 0;
+    s = MOSS.createBoard(cfg.cols, cfg.rows, cfg.mines);
+    emit('newgame', { state: s }); emit('tick', { seconds }); emit('mines', { remaining: s.mineCount });
   }
-  function startTimer(){
-    if(started) return;
-    started=true;
-    timerId=setInterval(()=>{ seconds++; emit('tick',{seconds}); },1000);
+  function start() {
+    if (started) return; started = true;
+    timerId = setInterval(() => { seconds++; emit('tick', { seconds }); }, 1000);
   }
-  function stopTimer(){ if(timerId){ clearInterval(timerId); timerId=null; } }
-
-  function reveal(r,c){
-    if(finished||!state) return;
-    const i=r*state.cols+c;
-    if(state.revealed[i]||state.flagged[i]) return;
-    startTimer();
-
-    const stack=[[r,c]];
-    let hitMine=false;
-
-    while(stack.length){
-      const [cr,cc]=stack.pop();
-      const ci=cr*state.cols+cc;
-      if(state.revealed[ci]||state.flagged[ci]) continue;
-      if(state.counts[ci]===-1){ state.revealed[ci]=true; hitMine=true; break; }
-      state.revealed[ci]=true;
-      if(state.counts[ci]===0){
-        for(let dr=-1;dr<=1;dr++){
-          for(let dc=-1;dc<=1;dc++){
-            if(dr===0&&dc===0) continue;
-            const nr=cr+dr, nc=cc+dc;
-            if(nr<0||nr>=state.rows||nc<0||nc>=state.cols) continue;
-            const ni=nr*state.cols+nc;
-            if(!state.revealed[ni]&&!state.flagged[ni]) stack.push([nr,nc]);
-          }
-        }
-      }
+  function nb(r, c) {
+    const o = [];
+    for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) {
+      const a = r + dr, b = c + dc;
+      if ((dr || dc) && a >= 0 && a < s.rows && b >= 0 && b < s.cols) o.push([a, b]);
     }
-
-    emit('reveal',{state});
-    if(hitMine) return endGame(false);
-    if(checkWin()) return endGame(true);
+    return o;
   }
-
-  function toggleFlag(r,c){
-    if(finished||!state) return;
-    const i=r*state.cols+c;
-    if(state.revealed[i]) return;
-    state.flagged[i]=!state.flagged[i];
-    const remaining = state.mineCount - state.flagged.filter(Boolean).length;
-    emit('flag',{state,r,c});
-    emit('mines',{remaining:Math.max(0,remaining)});
-  }
-
-  // Vitória = TODAS as células não-mina reveladas
-  function checkWin(){
-    const total = state.cols * state.rows;
-    const nonMineCells = total - state.mineCount;
-    let revealedSafe = 0;
-    for(let i=0;i<total;i++){
-      if(state.counts[i] !== -1 && state.revealed[i]) revealedSafe++;
+  function flood(r, c) {
+    const st = [[r, c]]; let hit = false;
+    while (st.length) {
+      const [a, b] = st.pop(), i = a * s.cols + b;
+      if (s.revealed[i] || s.flagged[i]) continue;
+      s.revealed[i] = true;
+      if (s.counts[i] === -1) { hit = true; s.exploded = i; continue; }
+      if (s.counts[i] === 0) nb(a, b).forEach(p => st.push(p));
     }
-    const won = revealedSafe === nonMineCells;
-    if (won) console.log('[MOSS] win!', revealedSafe, '/', nonMineCells);
-    return won;
+    return hit;
   }
-
-  function endGame(win){
-    finished=true; stopTimer();
-    if(!win){
-      for(let i=0;i<state.counts.length;i++){
-        if(state.counts[i]===-1) state.revealed[i]=true;
-      }
-    }
-    emit('end',{state,win});
+  function reveal(r, c) {
+    if (finished || !s) return;
+    const i = r * s.cols + c;
+    if (s.flagged[i]) return;
+    if (!s.placed) MOSS.placeMines(s, r, c);
+    start();
+    let hit = false;
+    if (s.revealed[i]) {                       // "chording": número com bandeiras suficientes
+      const n = nb(r, c);
+      if (s.counts[i] < 1 || n.filter(([a, b]) => s.flagged[a * s.cols + b]).length !== s.counts[i]) return;
+      n.forEach(([a, b]) => { if (flood(a, b)) hit = true; });
+    } else hit = flood(r, c);
+    emit('reveal', { state: s });
+    if (hit) return end(false);
+    if (won()) end(true);
   }
-
-  return { on, newGame, reveal, toggleFlag,
-    getState:()=>state,
-    isFinished:()=>finished,
-    getSeconds:()=>seconds };
+  function toggleFlag(r, c) {
+    if (finished || !s) return;
+    const i = r * s.cols + c;
+    if (s.revealed[i]) return;
+    s.flagged[i] = !s.flagged[i];
+    emit('flag', { state: s });
+    emit('mines', { remaining: Math.max(0, s.mineCount - s.flagged.filter(Boolean).length) });
+  }
+  function won() {
+    for (let i = 0; i < s.counts.length; i++) if (s.counts[i] !== -1 && !s.revealed[i]) return false;
+    return true;
+  }
+  function end(win) {
+    finished = true; stop();
+    if (win) { s.mines.forEach(i => s.flagged[i] = true); emit('mines', { remaining: 0 }); }
+    else s.lost = true;
+    emit('end', { state: s, win });
+  }
+  return { on, newGame, reveal, toggleFlag, getState: () => s, isFinished: () => finished };
 })();
