@@ -9,7 +9,7 @@ moss-and-mine/
 │   ├── layout.css
 │   ├── board.css
 │   └── components.css
-├── js/
+
 │   ├── config.js
 │   ├── utils.js
 │   ├── board.js

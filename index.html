@@ -7,13 +7,13 @@
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="css/reset.css?v=3">
-<link rel="stylesheet" href="css/variables.css?v=3">
-<link rel="stylesheet" href="css/layout.css?v=3">
-<link rel="stylesheet" href="css/board.css?v=3">
-<link rel="stylesheet" href="css/components.css?v=3">
+<link rel="stylesheet" href="css/reset.css?v=4">
+<link rel="stylesheet" href="css/variables.css?v=4">
+<link rel="stylesheet" href="css/layout.css?v=4">
+<link rel="stylesheet" href="css/board.css?v=4">
+<link rel="stylesheet" href="css/components.css?v=4">
 </head>
 <body>
 
@@ -29,29 +29,6 @@
     </nav>
   </header>
 
-  <!-- DIFICULDADE (onclick inline — à prova de falha) -->
-  <section class="difficulty" id="difficulty" aria-label="Nível de dificuldade">
-    <button class="difficulty__btn is-active" type="button"
-            onclick="MOSS.startPreset('easy')">
-      <span class="difficulty__label">Fácil</span>
-      <span class="difficulty__meta">9 × 9 · 10 minas</span>
-    </button>
-    <button class="difficulty__btn" type="button"
-            onclick="MOSS.startPreset('medium')">
-      <span class="difficulty__label">Médio</span>
-      <span class="difficulty__meta">16 × 12 · 30 minas</span>
-    </button>
-    <button class="difficulty__btn" type="button"
-            onclick="MOSS.startPreset('hard')">
-      <span class="difficulty__label">Difícil</span>
-      <span class="difficulty__meta">20 × 15 · 60 minas</span>
-    </button>
-    <button class="difficulty__btn" type="button"
-            onclick="MOSS.startPreset('custom')">
-      <span class="difficulty__label">Personalizar</span>
-      <span class="difficulty__meta">Defina o tamanho</span>
-    </button>
-  </section>
 
   <!-- INFO -->
   <section class="info">
@@ -67,17 +44,13 @@
 
   <!-- TABULEIRO -->
   <div class="board-wrap">
-    <div class="board" id="board">
-      <div class="goo-layer" aria-hidden="true">
-        <svg id="gooSvg" viewBox="0 0 0 0" preserveAspectRatio="none">
-          <g id="gooGroup"></g>
-        </svg>
-      </div>
-    </div>
+    <svg id="boardSvg" aria-label="Tabuleiro"></svg>
   </div>
 
+  <div class="status" id="status" role="status" aria-live="polite"></div>
+
   <!-- BOTÃO NOVO JOGO -->
-  <button class="restart" id="restart" type="button" onclick="MOSS.restart()">
+  <button class="restart" id="restart" type="button">
     <span class="restart__disc">
       <svg viewBox="0 0 12 12" fill="none" aria-hidden="true">
         <path d="M3 1.5 L10 6 L3 10.5 Z" fill="#FFFFFF"/>
@@ -86,7 +59,26 @@
     <span class="restart__txt">Novo Jogo</span>
   </button>
 
-  <div class="status" id="status" role="status" aria-live="polite"></div>
+
+  <!-- DIFICULDADE (onclick inline — à prova de falha) -->
+  <section class="difficulty" id="difficulty" aria-label="Nível de dificuldade">
+    <button class="difficulty__btn is-active" type="button" data-preset="easy">
+      <span class="difficulty__label">Fácil</span>
+      <span class="difficulty__meta">11 × 10 · 10 minas</span>
+    </button>
+    <button class="difficulty__btn" type="button" data-preset="medium">
+      <span class="difficulty__label">Médio</span>
+      <span class="difficulty__meta">16 × 12 · 30 minas</span>
+    </button>
+    <button class="difficulty__btn" type="button" data-preset="hard">
+      <span class="difficulty__label">Difícil</span>
+      <span class="difficulty__meta">20 × 15 · 60 minas</span>
+    </button>
+    <button class="difficulty__btn" type="button" data-preset="custom">
+      <span class="difficulty__label">Personalizar</span>
+      <span class="difficulty__meta">Defina o tamanho</span>
+    </button>
+  </section>
 
   <!-- MODAL PERSONALIZAR -->
   <div class="modal" id="customModal" hidden>
@@ -118,29 +110,14 @@
     </div>
   </div>
 
-  <!-- FILTRO GOO (funde círculos revelados numa massa preta contínua) -->
-  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
-    <defs>
-      <filter id="goo">
-        <feGaussianBlur in="SourceGraphic" stdDeviation="7" result="blur"/>
-        <feColorMatrix in="blur" mode="matrix"
-          values="1 0 0 0 0
-                  0 1 0 0 0
-                  0 0 1 0 0
-                  0 0 0 22 -10"/>
-      </filter>
-    </defs>
-  </svg>
-
   <!-- SCRIPTS -->
-  <script src="js/config.js?v=3"></script>
-  <script src="js/utils.js?v=3"></script>
-  <script src="js/board.js?v=3"></script>
-  <script src="js/renderer.js?v=3"></script>
-  <script src="js/fit.js?v=3"></script>
-  <script src="js/touch.js?v=3"></script>
-  <script src="js/game.js?v=3"></script>
-  <script src="js/ui.js?v=3"></script>
-  <script src="js/main.js?v=3"></script>
+  <script src="js/config.js?v=4"></script>
+  <script src="js/utils.js?v=4"></script>
+  <script src="js/board.js?v=4"></script>
+  <script src="js/renderer.js?v=4"></script>
+  <script src="js/fit.js?v=4"></script>
+  <script src="js/game.js?v=4"></script>
+  <script src="js/ui.js?v=4"></script>
+  <script src="js/main.js?v=4"></script>
 </body>
 </html>
