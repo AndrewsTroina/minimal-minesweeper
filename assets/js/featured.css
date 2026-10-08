@@ -1,0 +1,23 @@
+export function selectFeaturedGame(games) {
+  if (!games.length) {
+    return null;
+  }
+
+  const featured = games.filter((game) =>
+    game.tags.includes("featured")
+  );
+
+  if (!featured.length) {
+    return games[0];
+  }
+
+  if (featured.length === 1) {
+    return featured[0];
+  }
+
+  const index = Math.floor(
+    Math.random() * featured.length
+  );
+
+  return featured[index];
+}
