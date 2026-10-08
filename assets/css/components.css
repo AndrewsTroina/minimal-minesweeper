@@ -1,0 +1,41 @@
+.theme-toggle {
+  width: 44px;
+  justify-content: center;
+}
+
+.theme-toggle span {
+  display: block;
+
+  transition:
+    transform 150ms ease;
+}
+
+.theme-toggle:hover span {
+  transform: rotate(20deg);
+}
+
+.loading-state::before {
+  content: "— ";
+}
+
+.error-state {
+  color: var(--accent);
+}
+
+.noscript-message {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+
+  z-index: 100;
+
+  padding: 1rem;
+
+  color: #fff;
+  background: var(--accent);
+
+  text-align: center;
+
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
