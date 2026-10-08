@@ -1,0 +1,14 @@
+{
+  "name": "minimal-games",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "node scripts/generate-manifest.mjs",
+    "build": "npm run generate",
+    "validate": "node scripts/generate-manifest.mjs --check"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
