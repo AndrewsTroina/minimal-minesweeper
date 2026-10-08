@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <title>Minesweeper — Minimal Games</title>
+
+  <meta
+    name="description"
+    content="Clear the Minesweeper grid without hitting a mine."
+  >
+
+  <link
+    rel="canonical"
+    href="https://example.com/games/minesweeper/"
+  >
+
+  <link
+    rel="stylesheet"
+    href="/games/minesweeper/game.css"
+  >
+</head>
+
+<body>
+
+<main class="minesweeper">
+  <header class="game-header">
+    <a href="/" class="back-link">
+      ← GAMES
+    </a>
+
+    <h1>MINESWEEPER</h1>
+  </header>
+
+  <section
+    aria-labelledby="game-title"
+    class="game-area"
+  >
+
+    <h2 id="game-title">
+      Clear the grid without hitting a mine.
+    </h2>
+
+    <div class="game-status">
+      <span>
+        MINES
+        <strong id="mine-count">10</strong>
+      </span>
+
+      <span>
+        TIME
+        <strong id="timer">00:00</strong>
+      </span>
+    </div>
+
+    <div
+      id="board"
+      class="board"
+      role="grid"
+      aria-label="Minesweeper board"
+    ></div>
+
+    <button
+      id="new-game"
+      type="button"
+      class="new-game"
+    >
+      NEW GAME
+    </button>
+
+  </section>
+</main>
+
+<script
+  type="module"
+  src="/games/minesweeper/game.js"
+></script>
+
+</body>
+</html>
