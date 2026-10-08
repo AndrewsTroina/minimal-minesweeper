@@ -1,0 +1,57 @@
+:root {
+  --bg: #F7F7F4;
+  --surface: #EEEEEA;
+  --text: #171817;
+  --text-secondary: #666865;
+  --text-muted: #999B97;
+  --accent: #C94A2F;
+
+  --focus: #171817;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+  --space-10: 8rem;
+
+  --page-padding: 5vw;
+
+  --font-sans:
+    "Space Grotesk",
+    system-ui,
+    sans-serif;
+
+  --font-mono:
+    "IBM Plex Mono",
+    ui-monospace,
+    monospace;
+
+  --transition:
+    150ms ease;
+
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --bg: #171817;
+  --surface: #222421;
+  --text: #F3F3EF;
+  --text-secondary: #A8AAA5;
+  --text-muted: #70736F;
+  --accent: #D05A3C;
+
+  --focus: #F3F3EF;
+
+  color-scheme: dark;
+}
+
+@media (max-width: 639px) {
+  :root {
+    --page-padding: 16px;
+  }
+}
