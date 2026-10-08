@@ -1,0 +1,10 @@
+{
+  "title": "Minesweeper",
+  "description": "Clear the grid without hitting a mine.",
+  "image": "cover.webp",
+  "tags": [
+    "logic",
+    "classic",
+    "featured"
+  ]
+}
