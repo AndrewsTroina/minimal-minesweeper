@@ -1,5 +1,17 @@
 {
   "version": 1,
-  "generatedAt": "2026-10-18T20:21:05.667Z",
-  "games": []
+  "generatedAt": "2026-10-18T20:25:25.433Z",
+  "games": [
+    {
+      "slug": "minesweeper",
+      "title": "Minesweeper",
+      "description": "Clear the grid without hitting a mine.",
+      "image": "/games/minesweeper/cover.webp",
+      "tags": [
+        "logic",
+        "classic",
+        "featured"
+      ]
+    }
+  ]
 }
